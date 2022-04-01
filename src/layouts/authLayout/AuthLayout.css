@@ -1,0 +1,28 @@
+.texts-register
+{
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.cont-auth
+{
+    /* background-color: rgba(226, 245, 245, 0.5); */
+    background-color: #f5f5f5;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cont-auth .cont
+{
+    width: 900px;
+}
+
+.cont-left
+{
+    border-left: 1px solid #E8E8E8;
+    padding-top: 20px;
+}
