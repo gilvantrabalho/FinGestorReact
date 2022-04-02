@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "server": "json-server --wacth --port 4000 ./src/db.json",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

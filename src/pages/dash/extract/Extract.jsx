@@ -8,7 +8,6 @@ import InputIconComponent from "../../../components/inputIconComponent/InputIcon
 const Extract = () => {
 
     const [values, setValues] = React.useState([])
-    const [inputSearch, setInputSearch] = React.useState('')
     const [divFilter, setDivFilter] = React.useState(false)
 
     const [type, setType] = React.useState('')
@@ -19,6 +18,7 @@ const Extract = () => {
         ValuesApi.getAllValues(localStorage.getItem('id'))
             .then(resp => {
                 setValues(resp.data)
+                console.log(resp.data.length)
             })
     }, [])
 
@@ -26,8 +26,8 @@ const Extract = () => {
         let array = [];
         let id = localStorage.getItem('id')
         if (type) array.push(`type=${type}`)
-        if (startValue) array.push(`value__gte=${startValue}`)
-        if (endValue) array.push(`value__lte=${endValue}`)
+        if (startValue) array.push(`value_gte=${startValue}`)
+        if (endValue) array.push(`value_lte=${endValue}`)
 
         ValuesApi.filters(`?user_id=${id}&${array[0]}${array[1] ? '&' + array[1] : ''}${array[2] ? '&' + array[2] : ''}`)
             .then(resp => {
@@ -41,15 +41,6 @@ const Extract = () => {
             .then(resp => {
                 setValues(resp.data)
             })
-    }
-
-    const filters = () => {
-
-        // `values
-        //     ?type=Entrada
-        //     &value_start=20
-        //     &value_end=30`
-
     }
 
     return (

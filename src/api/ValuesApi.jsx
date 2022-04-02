@@ -26,10 +26,22 @@ const filters = async (query) => {
         api.get(`values${query}`)
 }
 
+const getById = async (id) => {
+    return await
+        api.get(`values/${id}`)
+}
+
+const edit = async (id, data) => {
+    return await
+        api.put(`values/${id}`, data)
+}
+
 export default {
     getAllValues,
     register,
     deleteItem,
     searchByDescription,
-    filters
+    filters,
+    getById,
+    edit
 }

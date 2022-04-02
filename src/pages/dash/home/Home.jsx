@@ -1,22 +1,21 @@
 import React from 'react'
 
-import InputIconComponent from '../../../components/inputIconComponent/InputIconComponent'
 import AreaGrid from '../../../components/areaGrid/AreaGrid'
 import Table from '../../../components/table/Table'
 import ValuesApi from '../../../api/ValuesApi'
-
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import Alerts from '../../../helpers/alerts/Alerts'
 import CardComponent from '../../../components/cardComponent/CardComponent'
 import LayoutDashComponent from '../../../components/layoutDashComponent/LayoutDashComponent'
-import Button from '../../../components/button/Button'
 import CardContainer from '../../../components/cardContainer/CardContainer'
+import FormAddValues from '../../../components/formAddValues/FormAddValues'
 
 const MySwal = withReactContent(Swal)
 
 const Home = () => {
 
+  const [idEdit, setIdEdit] = React.useState('')
   const [value, setValue] = React.useState('')
   const [type, setType] = React.useState('')
   const [description, setDescription] = React.useState('')
@@ -25,25 +24,10 @@ const Home = () => {
   let [totalEntry, setTotalEntry] = React.useState(0)
   let [totalOutput, setTotalOutput] = React.useState(0)
   let [netTotal, setNetTotal] = React.useState(0)
+  let [edited, setEdited] = React.useState(false)
 
   React.useEffect(() => {
-    ValuesApi.getAllValues(localStorage.getItem('id'))
-      .then(resp => {
-        setValues(resp.data)
-
-        totalEntry = 0
-        totalOutput = 0
-        for (let i = 0; i < resp.data.length; i++) {
-          if (resp.data[i].type == 'Entrada') {
-            totalEntry += parseFloat(resp.data[i].value)
-          } else {
-            totalOutput += parseFloat(resp.data[i].value)
-          }
-        }
-        setTotalEntry(totalEntry)
-        setTotalOutput(totalOutput)
-        setNetTotal(totalEntry - totalOutput)
-      })
+    getAllValues()
   }, [])
 
   function destroy(data) {
@@ -134,6 +118,59 @@ const Home = () => {
     }
   }
 
+  const edit = (id) => {
+    setIdEdit(id)
+    ValuesApi.getById(id)
+      .then(resp => {
+        console.log(resp)
+        setEdited(true)
+        setValue(resp.data.value)
+        setType(resp.data.type)
+        setDescription(resp.data.description)
+      })
+  }
+
+  const submitEdit = (e) => {
+    e.preventDefault()
+    ValuesApi.edit(idEdit, {
+      user_id: localStorage.getItem('id'),
+      description: description,
+      type: type,
+      value: value
+    })
+      .then(resp => {
+        console.log(resp.data.id)
+        if (resp.data.id) {
+          getAllValues()
+          Alerts.success('Editado com sucesso!')
+          setEdited(false)
+          setValue('')
+          setType('')
+          setDescription('')
+        }
+      })
+  }
+
+  const getAllValues = () => {
+    ValuesApi.getAllValues(localStorage.getItem('id'))
+      .then(resp => {
+        setValues(resp.data)
+
+        totalEntry = 0
+        totalOutput = 0
+        for (let i = 0; i < resp.data.length; i++) {
+          if (resp.data[i].type == 'Entrada') {
+            totalEntry += parseFloat(resp.data[i].value)
+          } else {
+            totalOutput += parseFloat(resp.data[i].value)
+          }
+        }
+        setTotalEntry(totalEntry)
+        setTotalOutput(totalOutput)
+        setNetTotal(totalEntry - totalOutput)
+      })
+  }
+
   return (
 
     <LayoutDashComponent>
@@ -163,46 +200,36 @@ const Home = () => {
         <AreaGrid
           left={
             <div>
-              <h5>Adicionar</h5>
+              {
+                edited
+                  ?
+                  <div className='d-flex justify-content-between bg-light p-2 rounded'>
+                    <h5>Editar Item</h5>
+                    <button
+                      onClick={() => {
+                        setEdited(false);
+                        setValue('')
+                        setType('')
+                        setDescription('')
+                      }}
+                      className='btn btn-sm btn-success shadow'
+                    >+</button>
+                  </div>
+                  :
+                  <h5>Adicionar</h5>
+              }
+              <FormAddValues
+                setValue={e => setValue(e.target.value)}
+                valueSetValue={value}
 
-              <form onSubmit={submit} method='POST' className='mt-3'>
+                setType={e => setType(e.target.value)}
+                valueType={type}
 
-                <InputIconComponent
-                  icon={<div>R$</div>}
-                  input={
-                    <input
-                      onChange={e => setValue(e.target.value)}
-                      value={value}
-                      type="number"
-                      className="form-control p-2"
-                      placeholder="Informe um valor..."
-                      min="0.00"
-                      max="10000.00"
-                      step="0.01"
-                    />
-                  }
-                />
-
-                <div className="form-group">
-                  <select onChange={e => setType(e.target.value)} className="form-select p-2" value={type}>
-                    <option value="">Selecione o Tipo...</option>
-                    <option value="Entrada">Entrada</option>
-                    <option value="Saída">Saída</option>
-                  </select>
-                </div>
-
-                <div className="form-group mt-3">
-                  <textarea onChange={e => setDescription(e.target.value)} value={description} className='form-control' cols="30" rows="3" placeholder='Descrição...'></textarea>
-                </div>
-
-                <Button
-                  type="submit"
-                  class="btn btn-primary shadow-sm"
-                  text="Enviar"
-                />
-
-              </form>
-
+                setDescription={e => setDescription(e.target.value)}
+                valueDescription={description}
+                textBtn={edited ? "Editar" : "Enviar"}
+                submit={edited ? submitEdit : submit}
+              />
             </div>
           }
 
@@ -229,10 +256,10 @@ const Home = () => {
                       values.map((item, index) => (
                         <tr key={index} className={item.type == "Entrada" ? "table-success" : "table-danger"}>
 
-                          <td className='align-middle'>{item.description}</td>
+                          <td className='align-middle'>{item.description} </td>
 
                           <td className='text-center align-middle'>
-                            <span className={item.type == "Entrada" ? "badge bg-success shadow" : "badge bg-danger shadow"}>Entrada</span>
+                            <span className={item.type == "Entrada" ? "badge bg-success shadow" : "badge bg-danger shadow"}>{item.type}</span>
                           </td>
 
                           <td className='text-center align-middle' style={{ fontWeight: '500' }}>
@@ -240,7 +267,7 @@ const Home = () => {
                           </td>
 
                           <td className='d-flex justify-content-center'>
-                            <button onClick={() => { console.log('Editar') }} className="btn btn-sm btn-primary m-1">
+                            <button onClick={() => { edit(item.id) }} className="btn btn-sm btn-primary m-1">
                               <i className="bi bi-pencil-fill"></i>
                             </button>
                             <button onClick={() => { destroy(item) }} className="btn btn-sm btn-danger m-1">
@@ -259,7 +286,6 @@ const Home = () => {
         />
         <br />
       </CardContainer>
-
     </LayoutDashComponent>
 
   )

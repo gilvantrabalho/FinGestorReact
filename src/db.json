@@ -11,6 +11,12 @@
       "email": "gilvan@gg.com",
       "password": "123",
       "id": 2
+    },
+    {
+      "name": "Miguel Ângelo",
+      "email": "miguel@mm.com",
+      "password": "123",
+      "id": 3
     }
   ],
   "values": [
@@ -22,25 +28,52 @@
       "id": 1
     },
     {
-      "user_id": "1",
-      "description": "dfsdfsdf",
-      "type": "Saída",
-      "value": "500",
-      "id": 2
-    },
-    {
-      "user_id": "2",
       "description": "dadasd",
       "type": "Saída",
-      "value": "1000",
+      "value": "4000",
       "id": 3
     },
     {
       "user_id": "2",
-      "description": "sdfsdfs",
+      "description": "Salário do dia 02/04",
       "type": "Entrada",
       "value": "3500",
       "id": 4
+    },
+    {
+      "user_id": "2",
+      "description": "Lanche",
+      "type": "Saída",
+      "value": "300",
+      "id": 6
+    },
+    {
+      "user_id": "2",
+      "description": "dasdfff",
+      "type": "Entrada",
+      "value": "1000",
+      "id": 7
+    },
+    {
+      "user_id": "3",
+      "description": "Salário do mês",
+      "type": "Entrada",
+      "value": "3500",
+      "id": 8
+    },
+    {
+      "user_id": "3",
+      "description": "Conta de luz",
+      "type": "Saída",
+      "value": "500",
+      "id": 9
+    },
+    {
+      "user_id": "3",
+      "description": "Conta de água editado",
+      "type": "Entrada",
+      "value": "300",
+      "id": 10
     }
   ]
 }

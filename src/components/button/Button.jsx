@@ -4,7 +4,7 @@ const Button = (props) => {
 
     return (
         <div className="d-grid gap-2 mt-3">
-            <button className={props.class} type={props.type}>
+            <button onClick={props.onClick} className={props.class} type={props.type}>
                 {props.text}
             </button>
         </div>

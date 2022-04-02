@@ -1,3 +1,12 @@
+1ª $ npm intall
+
+2ª Iniciar o projeto
+$ npm start
+
+3ª Para subir o servidor
+$ npm run server
+
+
 -> Rota
 [https://reactrouter.com/]
 
